@@ -1,1 +1,7 @@
 Please use the issue manager at : http://github.com/flaupretre/container-tools/issues
+
+* Variable to freeze start on script return (failure) for debug
+CTOOLS_START_NO_EXIT
+
+* Freeze on init failure
+

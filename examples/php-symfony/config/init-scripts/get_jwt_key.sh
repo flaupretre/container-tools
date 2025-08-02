@@ -25,7 +25,7 @@ if [ -n "${KEYCLOAK_URL:-}" ]; then
     $CURL "$JWT_URL" -o jwt.json || st=1
     if [ -f jwt.json ]; then
       if grep error jwt.json >/dev/null; then
-        sf_error "Got this from keycloak:"
+        echo "***ERROR: Got this from keycloak:"
         cat jwt.json
         st=1
       fi
