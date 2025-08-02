@@ -7,6 +7,7 @@
 #   - psql
 # It requires the following environment variables:
 #   - DB_URL
+#   - DB_CA_CERT_PATH
 #=============================================================================
 
 # Build connection string (url-encode path of CA cert file)
@@ -18,19 +19,19 @@ cstring="$DB_URL$args"
 #----
 
 while true ; do
-  sf_msg_section "Checking access to the database"
-  sf_debug "Connection string: $cstring"
+  echo "Checking access to the database"
+  echo "Connection string: $cstring"
   fi
 
   st=
   echo | "$PSQL" "$cstring" || st=1
 
   if [ -n "$st" ] ; then
-    sf_error "Connection failed - Retrying..."
+    echo "Connection failed - Retrying..."
     sleep 10
     continue
   else
-    sf_msg "OK"
+    echo "Connection OK"
     break
   fi
 done

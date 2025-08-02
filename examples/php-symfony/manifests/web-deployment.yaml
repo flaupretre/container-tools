@@ -1,0 +1,55 @@
+
+apiVersion: apps/v1
+kind: Deployment
+...
+spec:
+  ...
+  template:
+    ...
+    spec:
+      ...
+      #============ Init containers ============
+      initContainers:
+        #---- php ----
+        - name: init
+          image: ...
+          ...
+          command: [ "init-container" ]
+          env:
+            - name: CTOOLS_ROLE
+              value: api
+            - name: DB_URL
+              value: ...
+            - name: DB_CA_CERT_URL
+              value: ...
+            ...
+          volumeMounts:
+            - mountPath: "/tmp"
+              name: tmpdir
+            ...
+
+      #============ Containers ============
+      containers:
+        #---- PHP FPM ----
+        - name: phpfpm
+          image: ...
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: CTOOLS_ROLE
+              value: api
+            - name: DB_URL
+              value: ...
+            ...
+          volumeMounts:
+            - mountPath: "/tmp"
+              name: tmpdir
+            ...
+
+        #---- Nginx ----
+        - name: nginx
+          ...
+
+      volumes:
+        - name: tmpdir
+          emptyDir: {}
+        ...

@@ -12,13 +12,13 @@
 
 if [ -n "${DB_CA_CERT_URL:-}" ] ; then
   while true; do
-    sf_msg "-- Getting DB CA certificates"
-    sf_trace "URL: $DB_CA_CERT_URL"
-    sf_debug "Target file: $DB_CA_CERT_PATH"
-    sf_msg
+    echo "-- Getting DB CA certificates"
+    echo "URL: $DB_CA_CERT_URL"
+    echo "Target file: $DB_CA_CERT_PATH"
+    echo
 
     _rc=0
-    $CURL $DB_CA_CERT_URL -o "$DB_CA_CERT_PATHh" || _rc=1
+    $CURL $DB_CA_CERT_URL -o "$DB_CA_CERT_PATH" || _rc=1
 
     if [ $_rc != 0 ] ; then
       echo "** Error - Cannot get DB CA certificates - Retrying..."

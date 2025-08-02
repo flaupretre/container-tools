@@ -1,83 +1,69 @@
-#!/bin/bash
 #
 #===========================================================================
 
-set -euo pipefail
+set -eEuo pipefail
 exec 2>&1
 
 #---------------------------------
 
 function _ctools_init_usage
 {
-#TODO
-}
+cat <<EOF
+Usage: ${CTOOLS_PHASE}-container [h] [-v] [-c <dir>] [-r <role>] [-t <dir>] [-f]
 
-#----
+-h        : Display this help information
+-v        : increase verbose level. Can be set more than once
+-c <dir>  : Define config directory (default: /etc/ctools)
+-r <role> : Set role (default: none)
+-t <dir>  : Define tmp directory. Created if it does not exist yet. File
+            system must be writable (default: '/tmp/ctools')
+-f        : Freeze (run an endless loop) on failure . Makes debugging easier
+            (create a shell in the container to investigate failure).
 
-function _ctools_env_nl
-{
-echo >>"$CTOOLS_ENVFILE"
-}
-
-#----
-
-function ctools_save_var
-{
-local var value
-
-for var; do
-  _ctools_env_nl
-  value="${!var}"
-  vstring="`echo $value | sed -e 's,\,\\,g' -e 's,",\",g'`"
-  echo "export $var=\"$vstring\"" >>"$CTOOLS_ENVFILE"
-done
+All these options can be set on the command line or via environment variables
+(refer to the documentation for variable names).
+EOF
 }
 
 #---------------------------------
 # Main
 
-. ctools-common
+CTOOLS_PHASE="init"
 
-while getopts vc:r:d:h _opt;	do
+#----
+# Get cmd line opts
+
+source _ctools_common_1
+
+while getopts vc:r:t:fh _opt;	do
 	case $_opt in
-		v) sf_verbose_level=`expr $sf_verbose_level + 1` ;;
+		v) CTOOLS_LOGLEVEL=`expr $CTOOLS_LOGLEVEL + 1` ;;
     c) CTOOLS_CFGDIR="$OPTARG" ;;
     r) CTOOLS_ROLE="$OPTARG" ;;
-    d) CTOOLS_TMPDIR="$OPTARG" ;;
+    t) CTOOLS_TMPDIR="$OPTARG" ;;
+    f) CTOOLS_FREEZE_ON_FAILURE=y ;;
 		h) _ctools_init_usage ; exit 0 ;;
 		?) _ctools_init_usage ; exit 1 ;;
 	esac
 done
 
-[ -d $CTOOLS_TMPDIR ] || sf_create_dir $CTOOLS_TMPDIR
-cd $CTOOLS_TMPDIR
-
-sf_debug "Environment file: $CTOOLS_ENVFILE"
-touch $CTOOLS_ENVFILE
+source _ctools_common_2
 
 #----
+
+_ctools_init_create_envfile
 
 CTOOLS_INIT_SCRIPTS=""
 
-_ctools_source_cfg_script -i "env"
-[ -n "$CTOOLS_ROLE" ] && _ctools_source_cfg_script -i "role/$CTOOLS_ROLE/env"
+_ctools_load_cfg_env
 
 for script in $CTOOLS_INIT_SCRIPTS; do
-  sf_separator
-  sf_section "Executing init script: $_script"
-  _ctools_source_cfg_script "common/init/scripts/$_script"
+  _ctools_msg_separator
+  echo "Executing init script: $script"
+  echo
+  echo "#--- Script: $script" >$CTOOLS_INIT_ENVFILE
+  source "`_ctools_cfg_script_path init-scripts/$script`"
 done
 
-#----
-
-if [ "$CTOOLS_ERRORS" != 0 ] ; then
-    sf_fatal "Errors detected ($CTOOLS_ERRORS) - Aborting" $CTOOLS_ERRORS
-fi
-
-#----
-
-if [ "$sf_verbose_level" -ge 2 ]; then
-  sf_banner "Resulting environment file"
-  cat $CTOOLS_ENVFILE
-  sf_separator
-fi
+echo "------------- Init end ------------"
+_ctools_init_debug_dump_envfile
