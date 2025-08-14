@@ -1,0 +1,9 @@
+Package: container-tools
+Version: @VERSION@
+Architecture: all
+Maintainer: Francois Laupretre <francois@tekwire.net>
+Depends: bash
+Installed-Size: 100
+Homepage: https://github.com/flaupretre/container-tools
+Description: A set of tools to makes life with containers easier
+ A set of tools to makes life with containers easier

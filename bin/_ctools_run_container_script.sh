@@ -16,9 +16,10 @@ fi
 function _ctools_run_usage
 {
 cat <<EOF
-Usage: ${CTOOLS_PHASE}-container [-h] [-v] [-c <dir>] [-r <role>] [-t <dir>] [-i] [-f]
+Usage: ${CTOOLS_PHASE}-container [-h] [-V] [-v] [-c <dir>] [-r <role>] [-t <dir>] [-i] [-f]
 
 -h        : Display this help information
+-V        : Display software version and exit
 -v        : increase verbose level. Can be set more than once
 -c <dir>  : Define config directory (default: /etc/ctools)
 -r <role> : Set role (default: none)
@@ -42,7 +43,7 @@ EOF
 
 source _ctools_common_1
 
-while getopts vc:r:t:ifh _opt;	do
+while getopts vc:r:t:ifhV _opt;	do
 	case $_opt in
 		v) CTOOLS_LOGLEVEL=`expr $CTOOLS_LOGLEVEL + 1` ;;
     c) CTOOLS_CFGDIR="$OPTARG" ;;
@@ -51,6 +52,7 @@ while getopts vc:r:t:ifh _opt;	do
     i) CTOOLS_NO_INIT=y ;;
     f) CTOOLS_FAILURE_FREEZE=y ;;
 		h) _ctools_run_usage ; exit 0 ;;
+    V) echo "@VERSION@"; exit 0 ;;
 		?) _ctools_run_usage ; exit 1 ;;
 	esac
 done

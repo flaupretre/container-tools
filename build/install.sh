@@ -14,26 +14,36 @@ if [ -z "${SHELL:-}" ]; then
   exit 1
 fi
 
-BUILD_DIR="`dirname $0`"
-BASE_DIR="`dirname $BUILD_DIR`"
+TARGET="${TARGET:-}"
+BUILD_DIR="${BUILD_DIR:-`dirname $0`}"
+BASE_DIR="${BASE_DIR:-`dirname $BUILD_DIR`}"
+VERSION="`cat $BASE_DIR/VERSION`"
 
-BINDIR="${BINDIR:-/usr/bin}"
-CFGDIR="${CFGDIR:-/etc/ctools}"
+BINDIR="$TARGET/usr/bin"
+CFGDIR="$TARGET/etc/ctools"
+
+source "$BUILD_DIR/functions.sh"
+
+#---
+
+for dir in $BINDIR $CFGDIR; do
+  if [ ! -d "$dir" ]; then
+    echo "$dir: creating directory"
+    mkdir -p "$dir"
+  fi
+done
 
 #--- Copy scripts to bin dir and make them executable
 
-cd $BASE_DIR/bin
-for i in *.sh; do
-  target="$BINDIR/`basename $i .sh`"
-  echo "Installing $target..."
-  echo "#!$SHELL" >$target
-  cat $i >>$target
-  chmod +x $target
+for i in $BASE_DIR/bin/*.sh; do
+  base="`basename $i .sh`"
+  target="$BINDIR/$base"
+  echo "Installing $base..."
+  echo "#!$SHELL" >"$target"
+  ppc <"$i" >>"$target"
+  chmod 0755 $target
 done
 
-#--- Create empty config dir if it does not exist already
+#---
 
-if [ ! -d "$CFGDIR" ]; then
-  echo "$CFGDIR: creating directory"
-  mkdir -p "$CFGDIR"
-fi
+chown -Rh root:root "$TARGET"

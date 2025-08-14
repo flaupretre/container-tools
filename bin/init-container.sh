@@ -1,7 +1,7 @@
 #
 #===========================================================================
 
-set -eEuo pipefail
+set -eEuo pipefail +o histexpand
 exec 2>&1
 
 #---------------------------------
@@ -12,6 +12,7 @@ cat <<EOF
 Usage: ${CTOOLS_PHASE}-container [h] [-v] [-c <dir>] [-r <role>] [-t <dir>] [-f]
 
 -h        : Display this help information
+-V        : Display software version and exit
 -v        : increase verbose level. Can be set more than once
 -c <dir>  : Define config directory (default: /etc/ctools)
 -r <role> : Set role (default: none)
@@ -35,13 +36,14 @@ CTOOLS_PHASE="init"
 
 source _ctools_common_1
 
-while getopts vc:r:t:fh _opt;	do
+while getopts vc:r:t:fhV _opt;	do
 	case $_opt in
 		v) CTOOLS_LOGLEVEL=`expr $CTOOLS_LOGLEVEL + 1` ;;
     c) CTOOLS_CFGDIR="$OPTARG" ;;
     r) CTOOLS_ROLE="$OPTARG" ;;
     t) CTOOLS_TMPDIR="$OPTARG" ;;
     f) CTOOLS_FREEZE_ON_FAILURE=y ;;
+    V) echo "@VERSION@"; exit 0 ;;
 		h) _ctools_init_usage ; exit 0 ;;
 		?) _ctools_init_usage ; exit 1 ;;
 	esac
