@@ -1,5 +1,5 @@
 
-#TODO: Install ctools, sysfunc
+#TODO: Install ctools
 
 COPY config /etc/ctools
 

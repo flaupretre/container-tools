@@ -47,11 +47,9 @@ CTOOLS_PHASE="init"
 #----
 # Get cmd line opts
 
-source _ctools_common_1
-
 while getopts vc:r:t:fhV _opt;	do
 	case $_opt in
-		v) CTOOLS_LOGLEVEL=`expr $CTOOLS_LOGLEVEL + 1` ;;
+		v) CTOOLS_LOGLEVEL=`expr ${CTOOLS_LOGLEVEL:-0} + 1` ;;
     c) CTOOLS_CFGDIR="$OPTARG" ;;
     r) CTOOLS_ROLE="$OPTARG" ;;
     t) CTOOLS_TMPDIR="$OPTARG" ;;
@@ -62,7 +60,7 @@ while getopts vc:r:t:fhV _opt;	do
 	esac
 done
 
-source _ctools_common_2
+source ctools_env
 
 #----
 
@@ -72,13 +70,27 @@ CTOOLS_INIT_SCRIPTS=""
 
 _ctools_load_cfg_env
 
-for script in $CTOOLS_INIT_SCRIPTS; do
-  _ctools_msg_separator
-  echo "Executing init script: $script"
-  echo
-  echo "#--- Script: $script" >$CTOOLS_INIT_ENVFILE
-  source "`_ctools_cfg_script_path init-scripts/$script`"
-done
+if [ -z "$CTOOLS_INIT_SCRIPTS" ]; then
+  # Take files in 'init-scripts' dir in alpha order
+  for f in `ls -1 $CTOOLS_CFGDIR/init-scripts/*.sh 2>/dev/null`; do
+    [ -f "$f" ] && CTOOLS_INIT_SCRIPTS="$CTOOLS_INIT_SCRIPTS `basename $f .sh`" || :
+  done
+  _ctools_msg_trace "Got init scripts from dir content : $CTOOLS_INIT_SCRIPTS"
+fi
+
+if [ -z "$CTOOLS_INIT_SCRIPTS" ]; then
+  echo "No init script to run"
+else
+  for script in $CTOOLS_INIT_SCRIPTS; do
+    _ctools_msg_separator
+    echo "Executing init script: $script"
+    echo >>$CTOOLS_INIT_ENVFILE
+    echo "#>>>----- Starting script: $script" >>$CTOOLS_INIT_ENVFILE
+    source "`_ctools_cfg_script_path init-scripts/$script`"
+    echo >>$CTOOLS_INIT_ENVFILE  # Force newline
+    echo "#<<<----- Ending script: $script" >>$CTOOLS_INIT_ENVFILE
+  done
+fi
 
 echo "------------- Init end ------------"
 _ctools_init_debug_dump_envfile

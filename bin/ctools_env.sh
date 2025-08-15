@@ -13,8 +13,8 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #=============================================================================
-# This script is run before cmd line opts are parsed, so variables don't have
-# their final values.
+# This script is run after cmd line opts are parsed, so that variables have
+# their final values
 #=============================================================================
 
 function _ctools_cfg_script_path
@@ -59,6 +59,7 @@ done
 
 function _ctools_init_create_envfile
 {
+rm -f "$CTOOLS_INIT_ENVFILE"
 touch "$CTOOLS_INIT_ENVFILE"
 }
 
@@ -221,3 +222,18 @@ export CTOOLS_CFGDIR="${CTOOLS_CFGDIR:-/etc/ctools}"
 export CTOOLS_TMPDIR="${CTOOLS_TMPDIR:-/tmp/ctools}"
 export CTOOLS_FAILURE_FREEZE="${CTOOLS_FAILURE_FREEZE:-}"
 export CTOOLS_NO_INIT="${CTOOLS_NO_INIT:-}"
+
+#----
+
+[ -d $CTOOLS_TMPDIR ] || mkdir -p $CTOOLS_TMPDIR
+
+if [ ! -d "$CTOOLS_CFGDIR" ]; then
+  _ctools_msg_trace "$CTOOLS_CFGDIR: Config dir does not exist"
+fi
+
+CTOOLS_INIT_ENVFILE="$CTOOLS_TMPDIR/envfile.sh"
+_ctools_msg_debug "Init environment file: $CTOOLS_INIT_ENVFILE"
+
+CTOOLS_FROZEN="$CTOOLS_TMPDIR/frozen"
+
+trap '_ctools_failure_handler $?' ERR

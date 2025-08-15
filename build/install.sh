@@ -55,5 +55,3 @@ for i in $BASE_DIR/bin/*.sh; do
 done
 
 #---
-
-chown -Rh root:root "$TARGET"

@@ -55,11 +55,9 @@ EOF
 #----
 # Get cmd line opts
 
-source _ctools_common_1
-
 while getopts vc:r:t:ifhV _opt;	do
 	case $_opt in
-		v) CTOOLS_LOGLEVEL=`expr $CTOOLS_LOGLEVEL + 1` ;;
+		v) CTOOLS_LOGLEVEL=`expr ${CTOOLS_LOGLEVEL:-0} + 1` ;;
     c) CTOOLS_CFGDIR="$OPTARG" ;;
     r) CTOOLS_ROLE="$OPTARG" ;;
     t) CTOOLS_TMPDIR="$OPTARG" ;;
@@ -71,7 +69,7 @@ while getopts vc:r:t:ifhV _opt;	do
 	esac
 done
 
-source _ctools_common_2
+source ctools_env
 
 #----
 
@@ -90,7 +88,7 @@ fi
 
 if [ ! -f "$script" ]; then
   _ctools_msg_error "$CTOOLS_PHASE: Script not found"
-  rc=1
+  exit 1
 else
   source "$script"
 fi

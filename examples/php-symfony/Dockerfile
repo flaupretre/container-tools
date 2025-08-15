@@ -1,7 +1,7 @@
 
-FROM xxx:yyy
+FROM php:<version>-fpm
 
-#TODO: Install ctools, sysfunc
+#TODO: Install ctools
 
 ENV DB_CA_CERT_PATH=/tmp/db_ca_certs.pem
 

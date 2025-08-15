@@ -45,6 +45,8 @@ ppc <$DEB_BUILD_DIR/control >$DEB_TARGET/control
 
 $SHELL $BUILD_DIR/install.sh
 
+chown -Rh root:root "$TARGET"
+
 dpkg -b "$TARGET"
 
 mv -f "$TARGET.deb" "$BASE_DIR"
