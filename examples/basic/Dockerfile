@@ -1,6 +1,7 @@
 
 #TODO: Install ctools
 
-COPY config /etc/ctools
+COPY . /build
+RUN /build/build.sh
 
-CMD start-container
+CMD ctools start

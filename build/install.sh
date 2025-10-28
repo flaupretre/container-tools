@@ -45,7 +45,7 @@ done
 
 #--- Copy scripts to bin dir and make them executable
 
-for i in $BASE_DIR/bin/*.sh; do
+for i in $BASE_DIR/src/*.sh; do
   base="`basename $i .sh`"
   target="$BINDIR/$base"
   echo "Installing $base..."
