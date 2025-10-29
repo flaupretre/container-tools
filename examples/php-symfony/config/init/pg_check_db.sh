@@ -10,6 +10,8 @@
 #   - DB_CA_CERT_PATH
 #=============================================================================
 
+PSQL="${PSQL:-psql}"
+
 # Build connection string (url-encode path of CA cert file)
 
 p="`echo $DB_CA_CERT_PATH | sed 's,/,%2F,g'`"

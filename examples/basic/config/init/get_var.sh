@@ -3,4 +3,4 @@
 
 THIS_VALUE='this is a nice value'
 
-ctools_save_var THIS_VALUE
+ctools save THIS_VALUE "$THIS_VALUE"

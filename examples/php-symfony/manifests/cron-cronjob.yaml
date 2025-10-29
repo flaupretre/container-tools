@@ -17,7 +17,9 @@ spec:
             - name: init
               image: ...
               ...
-              command: [ "init-container" ]
+              command:
+                - ctools
+                - init
               env:
                 - name: CTOOLS_ROLE
                   value: cron
@@ -28,12 +30,12 @@ spec:
                 ...
               volumeMounts:
                 - mountPath: "/tmp"
-                  name: tmpdir
+                  name: tmp
                 ...
 
           #============ Containers ============
           containers:
-            - name: phpcron
+            - name: cron
               image: ...
               imagePullPolicy: IfNotPresent
               env:
@@ -50,10 +52,10 @@ spec:
                 ...
               volumeMounts:
                 - mountPath: "/tmp"
-                  name: tmpdir
+                  name: tmp
                 ...
           volumes:
-            - name: tmpdir
+            - name: tmp
               emptyDir: {}
             ...
 ---

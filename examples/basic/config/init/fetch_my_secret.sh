@@ -4,4 +4,4 @@
 
 MY_SECRET='secret-"value\1`23\$foo$bar'  # Replace this with the actual code to fetch secret
 
-ctools_save_var MY_SECRET
+ctools save MY_SECRET "$MY_SECRET"

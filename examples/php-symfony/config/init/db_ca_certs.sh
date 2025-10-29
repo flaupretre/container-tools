@@ -18,7 +18,7 @@ if [ -n "${DB_CA_CERT_URL:-}" ] ; then
     echo
 
     _rc=0
-    $CURL $DB_CA_CERT_URL -o "$DB_CA_CERT_PATH" || _rc=1
+    curl $DB_CA_CERT_URL -o "$DB_CA_CERT_PATH" || _rc=1
 
     if [ $_rc != 0 ] ; then
       echo "** Error - Cannot get DB CA certificates - Retrying..."

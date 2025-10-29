@@ -5,6 +5,7 @@ FROM php:<version>-fpm
 
 ENV DB_CA_CERT_PATH=/tmp/db_ca_certs.pem
 
-COPY config /etc/ctools
+COPY . /build
+RUN /build/config.sh
 
-CMD start-container
+CMD ctools start

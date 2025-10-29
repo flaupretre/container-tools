@@ -14,10 +14,12 @@ spec:
         - name: init
           image: ...
           ...
-          command: [ "init-container" ]
+          command:
+            - ctools
+            - init
           env:
             - name: CTOOLS_ROLE
-              value: api
+              value: worker
             - name: DB_URL
               value: ...
             - name: DB_CA_CERT_URL
@@ -25,31 +27,30 @@ spec:
             ...
           volumeMounts:
             - mountPath: "/tmp"
-              name: tmpdir
+              name: tmp
             ...
 
       #============ Containers ============
       containers:
-        #---- PHP FPM ----
-        - name: phpfpm
+        - name: worker
           image: ...
           imagePullPolicy: IfNotPresent
           env:
             - name: CTOOLS_ROLE
-              value: api
+              value: worker
             - name: DB_URL
               value: ...
             ...
           volumeMounts:
             - mountPath: "/tmp"
-              name: tmpdir
+              name: tmp
+          lifecycle:
+            preStop:
+              exec:
+                command: [ "ctools","stop"]
             ...
 
-        #---- Nginx ----
-        - name: nginx
-          ...
-
       volumes:
-        - name: tmpdir
+        - name: tmp
           emptyDir: {}
         ...

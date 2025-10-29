@@ -16,8 +16,13 @@
 
 BINDIR = /usr/bin
 
+#----------------
+
 install:
 	BINDIR=$(BINDIR) bash build/install.sh
+
+shellcheck:
+	shellcheck -e SC2001,SC2015,SC2012,SC1090,SC2016,SC2250,SC2292,SC2310 --enable=all src/*
 
 deb:
 	bash build/debian/mk_deb.sh

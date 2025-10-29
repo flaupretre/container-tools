@@ -2,6 +2,6 @@
 #TODO: Install ctools
 
 COPY . /build
-RUN /build/build.sh
+RUN /build/config.sh
 
 CMD ctools start

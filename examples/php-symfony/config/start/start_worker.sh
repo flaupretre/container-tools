@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Run a messenger:consume loop
+# Run a Symfony messenger:consume loop
 #
 #----------------------------------------------------------------------------
 
@@ -20,18 +20,14 @@ if [ -z "${ASYNC_TRANSPORTS:-}" ]; then
   exit 1
 fi
 
-STOP_FLAG=/tmp/stop
-
 #--- Loop
 
-rm -rf $STOP_FLAG || :
 while true ; do
   echo "---`date` - Starting messenger:consume"
   rc=0
   php bin/console messenger:consume $ASYNC_TRANSPORTS $OPTS || rc=$?
-  if [ -f $STOP_FLAG ]; then
+  if ctools is_stopping; then
     echo "--- Stop was requested - Going down..."
-    rm -rf $STOP_FLAG || :
     break
   fi
   if [ $rc != 0 -a $rc != 137 ]; then

@@ -14,6 +14,7 @@ if [ -n "${KEYCLOAK_URL:-}" ]; then
   JWT_URL="${KEYCLOAK_URL:-}/auth/realms/${KEYCLOAK_REALM:-}"
 
   RETRY_INTERVAL="${RETRY_INTERVAL:-30}"
+  CURL="${CURL:-curl}"
   INSECURE="${INSECURE:-}"
   [ "X$INSECURE" != X ] && CURL="$CURL -k" || :
 
@@ -39,7 +40,7 @@ if [ -n "${KEYCLOAK_URL:-}" ]; then
     JWT_PUBLIC_KEY="-----BEGIN PUBLIC KEY-----
 $key
 -----END PUBLIC KEY-----"
-    ctools_save_var JWT_PUBLIC_KEY
+    ctools save JWT_PUBLIC_KEY "$JWT_PUBLIC_KEY"
 
     #----
     break
