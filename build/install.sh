@@ -19,11 +19,6 @@
 
 set -euo pipefail
 
-if [ -z "${SHELL:-}" ]; then
-  echo "ERROR: the SHELL environment variable was not found"
-  exit 1
-fi
-
 TARGET="${TARGET:-}"
 BUILD_DIR="${BUILD_DIR:-`dirname $0`}"
 BASE_DIR="${BASE_DIR:-`dirname $BUILD_DIR`}"
@@ -49,7 +44,7 @@ for i in $BASE_DIR/src/*.sh; do
   base="`basename $i .sh`"
   target="$BINDIR/$base"
   echo "Installing $base..."
-  echo "#!$SHELL" >"$target"
+  echo "#!/usr/bin/env bash" >"$target"
   ppc <"$i" >>"$target"
   chmod 0755 $target
 done

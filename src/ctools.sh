@@ -15,7 +15,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #=============================================================================
 
-set -eEuo pipefail +o histexpand
+set -eEuo pipefail
 exec 2>&1
 
 #----
