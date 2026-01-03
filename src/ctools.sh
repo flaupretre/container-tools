@@ -496,8 +496,8 @@ done
 CTOOLS_INIT_ENVFILE="$CTOOLS_TMPDIR/envfile.sh"
 _ctools_msg_debug "Init environment file: $CTOOLS_INIT_ENVFILE"
 
-CTOOLS_IS_FROZEN="$CTOOLS_TMPDIR/frozen"
-CTOOLS_IS_STOPPING="$CTOOLS_TMPDIR/stopping"
+export CTOOLS_IS_FROZEN="$CTOOLS_TMPDIR/frozen"
+export CTOOLS_IS_STOPPING="$CTOOLS_TMPDIR/stopping"
 
 trap '_ctools_failure_handler $?' ERR
 
